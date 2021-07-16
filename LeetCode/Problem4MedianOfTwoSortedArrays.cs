@@ -7,11 +7,6 @@
 			var length1 = nums1.Length;
 			var length2 = nums2.Length;
 			var lengthMedian = length1 + length2;
-			switch (lengthMedian)
-			{
-				case 0: return 0;
-				case 1: return length1 == 1 ? nums1[0] : nums2[0];
-			}
 			var lengthMedianStop = lengthMedian / 2 + 1;
 			var averageMedian = (lengthMedian % 2) == 0;
 			var index1 = 0;
