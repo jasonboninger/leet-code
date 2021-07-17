@@ -14,15 +14,22 @@
 			FIsPalindromic isPalindromicEven = _IsPalindromicEven;
 			for (int i = 0; i < s.Length; i++)
 			{
-				_SetBestPalindromeOffset(ref indexOddBest, ref offsetOddBest, s, i, isPalindromicOdd);
-				_SetBestPalindromeOffset(ref indexEvenBest, ref offsetEvenBest, s, i, isPalindromicEven);
+				_SetBestPalindromeIndexAndOffset(ref indexOddBest, ref offsetOddBest, s, i, isPalindromicOdd);
+				_SetBestPalindromeIndexAndOffset(ref indexEvenBest, ref offsetEvenBest, s, i, isPalindromicEven);
 			}
 			return offsetOddBest > offsetEvenBest
 				? _GetPalindromeOdd(s, indexOddBest, offsetOddBest)
 				: _GetPalindromeEven(s, indexEvenBest, offsetEvenBest);
 		}
 
-		private static void _SetBestPalindromeOffset(ref int indexBest, ref int offsetBest, string @string, int index, FIsPalindromic isPalindromic)
+		private static void _SetBestPalindromeIndexAndOffset
+		(
+			ref int indexBest,
+			ref int offsetBest,
+			string @string,
+			int index,
+			FIsPalindromic isPalindromic
+		)
 		{
 			if (!isPalindromic(@string, index, offsetBest + 1))
 			{
