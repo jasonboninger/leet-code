@@ -1,44 +1,44 @@
-﻿using System;
-
-namespace LeetCode
+﻿namespace LeetCode
 {
 	public static class Problem5LongestPalindromicSubstring
 	{
+		private delegate bool FIsPalindromic(string @string, int index, int offset);
+
 		public static string LongestPalindrome(string s)
 		{
 			var indexOddBest = 0;
 			var offsetOddBest = 0;
+			FIsPalindromic isPalindromicOdd = _IsPalindromicOdd;
 			var indexEvenBest = -1;
 			var offsetEvenBest = -1;
+			FIsPalindromic isPalindromicEven = _IsPalindromicEven;
 			for (int i = 0; i < s.Length; i++)
 			{
-				var offsetOdd = _GetBestPalindromeOffset(s, i, _IsPalindromicOdd);
-				if (offsetOdd > offsetOddBest)
-				{
-					indexOddBest = i;
-					offsetOddBest = offsetOdd;
-				}
-				var offsetEven = _GetBestPalindromeOffset(s, i, _IsPalindromicEven);
-				if (offsetEven > offsetEvenBest)
-				{
-					indexEvenBest = i;
-					offsetEvenBest = offsetEven;
-				}
+				_SetBestPalindromeOffset(ref indexOddBest, ref offsetOddBest, s, i, isPalindromicOdd);
+				_SetBestPalindromeOffset(ref indexEvenBest, ref offsetEvenBest, s, i, isPalindromicEven);
 			}
 			return offsetOddBest > offsetEvenBest
 				? _GetPalindromeOdd(s, indexOddBest, offsetOddBest)
 				: _GetPalindromeEven(s, indexEvenBest, offsetEvenBest);
 		}
 
-		private static int _GetBestPalindromeOffset(string @string, int index, Func<string, int, int, bool> isPalindromic)
+		private static void _SetBestPalindromeOffset(ref int indexBest, ref int offsetBest, string @string, int index, FIsPalindromic isPalindromic)
 		{
+			if (!isPalindromic(@string, index, offsetBest + 1))
+			{
+				return;
+			}
 			var offset = 0;
 			while (isPalindromic(@string, index, offset))
 			{
 				offset++;
 			}
 			offset--;
-			return offset;
+			if (offset > offsetBest)
+			{
+				indexBest = index;
+				offsetBest = offset;
+			}
 		}
 
 		private static bool _IsPalindromicOdd(string @string, int index, int offset)
