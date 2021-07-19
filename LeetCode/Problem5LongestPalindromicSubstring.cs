@@ -1,10 +1,10 @@
 ﻿namespace LeetCode
 {
-	public static class Problem5LongestPalindromicSubstring
+	internal static class Problem5LongestPalindromicSubstring
 	{
 		private delegate bool FIsPalindromic(string @string, int index, int offset);
 
-		public static string LongestPalindrome(string s)
+		internal static string LongestPalindrome(string s)
 		{
 			var indexOddBest = 0;
 			var offsetOddBest = 0;
