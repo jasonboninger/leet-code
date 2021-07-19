@@ -1,8 +1,8 @@
 ﻿namespace LeetCode
 {
-    public static class Problem2AddTwoNumbers
+    internal static class Problem2AddTwoNumbers
     {
-        public class ListNode
+        internal class ListNode
         {
             public int val;
             public ListNode next;
@@ -15,7 +15,7 @@
 
         private static readonly ListNode _zero = new();
 
-        public static ListNode AddTwoNumbers(ListNode l1, ListNode l2)
+        internal static ListNode AddTwoNumbers(ListNode l1, ListNode l2)
         {
             var first = new ListNode();
             _AddTwoNumbers(first, l1, l2);

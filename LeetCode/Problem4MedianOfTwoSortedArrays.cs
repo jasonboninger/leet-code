@@ -1,8 +1,8 @@
 ﻿namespace LeetCode
 {
-	public static class Problem4MedianOfTwoSortedArrays
+	internal static class Problem4MedianOfTwoSortedArrays
 	{
-		public static double FindMedianSortedArrays(int[] nums1, int[] nums2)
+		internal static double FindMedianSortedArrays(int[] nums1, int[] nums2)
 		{
 			var length1 = nums1.Length;
 			var length2 = nums2.Length;

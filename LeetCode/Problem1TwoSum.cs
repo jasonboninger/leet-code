@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace LeetCode
 {
-	public static class Problem1TwoSum
+	internal static class Problem1TwoSum
 	{
-		public static int[] TwoSum(int[] nums, int target)
+		internal static int[] TwoSum(int[] nums, int target)
 		{
 			var numNeededToIndexMappings = new Dictionary<int, int>();
 			for (int i = 0; i < nums.Length; i++)

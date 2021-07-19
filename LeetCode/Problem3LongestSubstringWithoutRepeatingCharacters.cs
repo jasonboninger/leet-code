@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LeetCode
 {
-	public static class Problem3LongestSubstringWithoutRepeatingCharacters
+	internal static class Problem3LongestSubstringWithoutRepeatingCharacters
 	{
 		private class DistinctQueue<TValue>
 		{
@@ -33,7 +33,7 @@ namespace LeetCode
 			}
 		}
 
-		public static int LengthOfLongestSubstring(string s)
+		internal static int LengthOfLongestSubstring(string s)
 		{
 			var run = new DistinctQueue<char>();
 			var best = 0;
