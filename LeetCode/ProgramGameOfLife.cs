@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -189,6 +190,27 @@ namespace LeetCode
 				//(0, -4),
 				//(0, 5),
 				//(0, -5),
+				// Heart
+				//(0, 0),
+				//(0, 1),
+				//(0, 2),
+				//(0, 3),
+				//(1, 1),
+				//(1, 2),
+				//(1, 3),
+				//(1, 4),
+				//(-1, 1),
+				//(-1, 2),
+				//(-1, 3),
+				//(-1, 4),
+				//(2, 2),
+				//(2, 3),
+				//(2, 4),
+				//(-2, 2),
+				//(-2, 3),
+				//(-2, 4),
+				//(3, 3),
+				//(-3, 3),
 			};
 			// Create life
 			var life = new Life(cells);
@@ -202,30 +224,12 @@ namespace LeetCode
 					_GetInputAsync
 						(
 							frameDelay: TimeSpan.FromSeconds(0.1),
-							(
-								ConsoleKey.UpArrow,
-								() => center.y += 1
-							),
-							(
-								ConsoleKey.DownArrow,
-								() => center.y -= 1
-							),
-							(
-								ConsoleKey.LeftArrow,
-								() => center.x -= 1
-							),
-							(
-								ConsoleKey.RightArrow,
-								() => center.x += 1
-							),
-							(
-								ConsoleKey.R,
-								() => life = new Life(cells)
-							),
-							(
-								ConsoleKey.P,
-								() => paused = !paused
-							)
+							(ConsoleKey.UpArrow, () => center.y += 1),
+							(ConsoleKey.DownArrow, () => center.y -= 1),
+							(ConsoleKey.LeftArrow, () => center.x -= 1),
+							(ConsoleKey.RightArrow, () => center.x += 1),
+							(ConsoleKey.R, () => life = new Life(cells)),
+							(ConsoleKey.P, () => paused = !paused)
 						),
 					_RenderAsync
 						(
@@ -276,11 +280,19 @@ namespace LeetCode
 			var life = getLife();
 			// Create iterations
 			var iterations = 0;
+			// Create mutation time
+			var timeMutation = 0d;
+			// Create render time
+			var timeRender = 0d;
+			// Create stopwatch
+			var stopwatch = new Stopwatch();
 			// Create render
 			var render = new StringBuilder();
 			// Run life
 			while (true)
 			{
+				// Start stopwatch
+				stopwatch.Restart();
 				// Get new life
 				var lifeNew = getLife();
 				// Check if life changed
@@ -318,10 +330,20 @@ namespace LeetCode
 				// Add iteration
 				render.Append("iteration: ");
 				render.Append(iterations);
+				// Add mutation time
+				render.Append(" | mutation time: ");
+				render.Append(timeMutation);
+				render.Append(" ms");
+				// Add render time
+				render.Append(" | render time: ");
+				render.Append(timeRender);
+				render.Append(" ms");
 				// Set position
 				Console.SetCursorPosition(0, 0);
 				// Write line
 				Console.WriteLine(render.ToString());
+				// Set render time
+				timeRender = stopwatch.Elapsed.TotalMilliseconds;
 				// Wait for delay
 				await Task.Delay(frameDelay);
 				// Check if paused
@@ -330,8 +352,12 @@ namespace LeetCode
 					// Skip mutation
 					continue;
 				}
+				// Start stopwatch
+				stopwatch.Restart();
 				// Mutate life
 				life.Mutate();
+				// Set mutation time
+				timeMutation = stopwatch.Elapsed.TotalMilliseconds;
 				// Increase iterations
 				iterations++;
 			}
