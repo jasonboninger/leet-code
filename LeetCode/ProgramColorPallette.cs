@@ -25,18 +25,39 @@ namespace LeetCode
 			Console.WriteLine();
 			Console.WriteLine($"Colors image saved to {file.FullName}.");
 			Console.WriteLine();
+			// Create log instructions
+			static void logInstructions()
+			{
+				Console.WriteLine("Enter any RGB color (e.g. 255, 255, 255) to lookup its UV coordinates:");
+				Console.WriteLine();
+			}
 			// Log instructions
-			Console.WriteLine("Enter any RGB color (e.g. 255, 255, 255) to lookup its UV coordinates:");
-			Console.WriteLine();
+			logInstructions();
 			// Create regular expression
 			var regularExpression = new Regex("^[^0-9]*(?<RED>[0-9]{1,3})[^0-9]+(?<GREEN>[0-9]{1,3})[^0-9]+(?<BLUE>[0-9]{1,3})[^0-9]*$");
 			// Provide lookup
 			while (true)
 			{
-				// Create round
-				static int round(byte value) => value == 255 ? 255 : (value / _COLOR_INCREMENT * _COLOR_INCREMENT);
+				// Get input
+				var input = Console.ReadLine() ?? string.Empty;
+				// Check if clear
+				switch (input.ToUpper())
+				{
+					case "CLEAR":
+					case "CLS":
+						// Clear console
+						Console.Clear();
+						// Add line
+						Console.WriteLine();
+						// Log instructions
+						logInstructions();
+						// Continue loop
+						continue;
+				}
 				// Get input and match with regular expression
-				var regularExpressionMatch = regularExpression.Match(Console.ReadLine() ?? string.Empty);
+				var regularExpressionMatch = regularExpression.Match(input);
+				// Create round RGB value
+				static int roundRgbValue(byte value) => value == 255 ? 255 : (value / _COLOR_INCREMENT * _COLOR_INCREMENT);
 				// Check if match is success and color can be parsed
 				if
 				(
@@ -44,7 +65,7 @@ namespace LeetCode
 					&& byte.TryParse(regularExpressionMatch.Groups["RED"].Value, out var red)
 					&& byte.TryParse(regularExpressionMatch.Groups["GREEN"].Value, out var green)
 					&& byte.TryParse(regularExpressionMatch.Groups["BLUE"].Value, out var blue)
-					&& lookup.TryGetValue(Color.FromArgb(round(red), round(green), round(blue)), out var uv)
+					&& lookup.TryGetValue(Color.FromArgb(roundRgbValue(red), roundRgbValue(green), roundRgbValue(blue)), out var uv)
 				)
 				{
 					// Get x and y
