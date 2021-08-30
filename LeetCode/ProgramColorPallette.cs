@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace LeetCode
@@ -28,13 +29,15 @@ namespace LeetCode
 			// Create log instructions
 			static void logInstructions()
 			{
-				Console.WriteLine("Enter any RGB color (e.g. 255, 255, 255) to lookup its UV coordinates:");
+				Console.WriteLine("Enter any RGB color to lookup its UV coordinates or UV coordinates to lookup its RGB color:");
 				Console.WriteLine();
 			}
 			// Log instructions
 			logInstructions();
-			// Create regular expression
-			var regularExpression = new Regex("^[^0-9]*(?<RED>[0-9]{1,3})[^0-9]+(?<GREEN>[0-9]{1,3})[^0-9]+(?<BLUE>[0-9]{1,3})[^0-9]*$");
+			// Create RGB regular expression
+			var regularExpressionRgb = new Regex("^[^0-9]*(?<RED>[0-9]{1,3})[^0-9]+(?<GREEN>[0-9]{1,3})[^0-9]+(?<BLUE>[0-9]{1,3})[^0-9]*$");
+			// Create coordinate regular expression
+			var regularExpressionCoordinate = new Regex("^[^0-9.]*(?<X>[0-9.]+)[^0-9.]+(?<Y>[0-9.]+)[^0-9.]*$");
 			// Provide lookup
 			while (true)
 			{
@@ -54,34 +57,55 @@ namespace LeetCode
 						// Continue loop
 						continue;
 				}
-				// Get input and match with regular expression
-				var regularExpressionMatch = regularExpression.Match(input);
+				// Match with RGB regular expression
+				var regularExpressionMatchRgb = regularExpressionRgb.Match(input);
 				// Create round RGB value
 				static int roundRgbValue(byte value) => value == 255 ? 255 : (value / _COLOR_INCREMENT * _COLOR_INCREMENT);
-				// Check if match is success and color can be parsed
+				// Check if RGB match is success and color can be parsed
 				if
 				(
-					regularExpressionMatch.Success
-					&& byte.TryParse(regularExpressionMatch.Groups["RED"].Value, out var red)
-					&& byte.TryParse(regularExpressionMatch.Groups["GREEN"].Value, out var green)
-					&& byte.TryParse(regularExpressionMatch.Groups["BLUE"].Value, out var blue)
+					regularExpressionMatchRgb.Success
+					&& byte.TryParse(regularExpressionMatchRgb.Groups["RED"].Value, out var red)
+					&& byte.TryParse(regularExpressionMatchRgb.Groups["GREEN"].Value, out var green)
+					&& byte.TryParse(regularExpressionMatchRgb.Groups["BLUE"].Value, out var blue)
 					&& lookup.TryGetValue(Color.FromArgb(roundRgbValue(red), roundRgbValue(green), roundRgbValue(blue)), out var uv)
 				)
 				{
-					// Get x and y
-					var (x, y) = uv;
 					// Invert y
-					y = Math.Max(0, Math.Min(1, 1 - y));
+					uv.y = Math.Max(0, Math.Min(1, 1 - uv.y));
 					// Log UV
-					Console.WriteLine($"({x}, {y})");
+					Console.WriteLine($"({uv.x}, {uv.y})");
 					Console.WriteLine();
+					// Continue loop
+					continue;
 				}
-				else
+				// Match with coordinate regular expression
+				var regularExpressionMatchCoordinate = regularExpressionCoordinate.Match(input);
+				// Check if coordinate match is success and coordinate is in range
+				if
+				(
+					regularExpressionMatchCoordinate.Success
+					&& float.TryParse(regularExpressionMatchCoordinate.Groups["X"].Value, out var x)
+					&& float.TryParse(regularExpressionMatchCoordinate.Groups["Y"].Value, out var y)
+					&& x > 0 && x < 1 && y > 0 && y < 1
+				)
 				{
-					// Log error
-					Console.WriteLine("Invalid RGB color input.");
+					// Invert y
+					y = 1 - y;
+					// Get color
+					var (color, _) = lookup
+						.Select(kv => (color: kv.Key, closeness: Math.Abs(kv.Value.x - x) + Math.Abs(kv.Value.y - y)))
+						.OrderBy(_ => _.closeness)
+						.First();
+					// Log color
+					Console.WriteLine($"({color.R}, {color.G}, {color.B})");
 					Console.WriteLine();
+					// Continue loop
+					continue;
 				}
+				// Log error
+				Console.WriteLine("Invalid input.");
+				Console.WriteLine();
 			}
 		}
 
